@@ -1,0 +1,122 @@
+[
+  {
+    "category": "COĞRAFYA",
+    "text": "Avustralya'nın başkenti neresidir?",
+    "options": ["Brisbane", "Sydney", "Canberra"],
+    "correct": "Canberra"
+  },
+  {
+    "category": "COĞRAFYA",
+    "text": "Dünyanın en büyük okyanusu hangisidir?",
+    "options": ["Hint Okyanusu", "Pasifik Okyanusu", "Arktik Okyanus"],
+    "correct": "Pasifik Okyanusu"
+  },
+  {
+    "category": "COĞRAFYA",
+    "text": "Hangi ülke laleleriyle ünlüdür?",
+    "options": ["Almanya", "Hollanda", "Polonya"],
+    "correct": "Hollanda"
+  },
+  {
+    "category": "COĞRAFYA",
+    "text": "Victoria Şelalesi hangi Afrika ülkesindedir?",
+    "options": ["Zimbabve", "Senegal", "Gine"],
+    "correct": "Zimbabve"
+  },
+  {
+    "category": "COĞRAFYA",
+    "text": "'Binlerce göl ülkesi' olarak bilinen ülke hangisidir?",
+    "options": ["Danimarka", "Norveç", "Finlandiya"],
+    "correct": "Finlandiya"
+  },
+  {
+    "category": "GENEL KÜLTÜR",
+    "text": "Shakespeare’in en uzun oyunu hangisidir?",
+    "options": ["Hamlet", "Othello", "Kral Lear"],
+    "correct": "Hamlet"
+  },
+  {
+    "category": "GENEL KÜLTÜR",
+    "text": "‘Samba’ dansıyla tanınan ülke hangisidir?",
+    "options": ["Meksika", "Brezilya", "Kolombiya"],
+    "correct": "Brezilya"
+  },
+  {
+    "category": "GENEL KÜLTÜR",
+    "text": "Google logosundaki ‘G’ harfi hangi renktir?",
+    "options": ["Kırmızı", "Sarı", "Mavi"],
+    "correct": "Mavi"
+  },
+  {
+    "category": "GENEL KÜLTÜR",
+    "text": "Pizza hangi İtalyan şehrinde icat edilmiştir?",
+    "options": ["Pisa", "Milano", "Napoli"],
+    "correct": "Napoli"
+  },
+  {
+    "category": "GENEL KÜLTÜR",
+    "text": "‘Blue Ribbon Sports’ olarak bilinen şirket hangisidir?",
+    "options": ["Nike", "Adidas", "Reebok"],
+    "correct": "Nike"
+  },
+  {
+    "category": "DÜNYA MUTFAĞI",
+    "text": "Yufka, ceviz/fıstık ve şerbetle yapılan geleneksel Türk tatlısı hangisidir?",
+    "options": ["Laz Böreği", "Güllaç", "Baklava"],
+    "correct": "Baklava"
+  },
+  {
+    "category": "DÜNYA MUTFAĞI",
+    "text": "Dünyanın en pahalı baharatı olan safranın en büyük üreticisi hangi ülkedir?",
+    "options": ["Hindistan", "Fas", "İran"],
+    "correct": "İran"
+  },
+  {
+    "category": "DÜNYA MUTFAĞI",
+    "text": "İspanya'nın ulusal yemeği nedir?",
+    "options": ["Yahni", "Paella", "Makarna"],
+    "correct": "Paella"
+  },
+  {
+    "category": "DÜNYA MUTFAĞI",
+    "text": "Japon çay seremonilerinde geleneksel olarak hangi çay türü kullanılır?",
+    "options": ["Oolong", "Matcha", "Yasemin"],
+    "correct": "Matcha"
+  },
+  {
+    "category": "DÜNYA MUTFAĞI",
+    "text": "Caprese salatası genellikle domates, fesleğen ve hangi peynir çeşidini içerir?",
+    "options": ["Mozarella", "Ricotta", "Mascarpone"],
+    "correct": "Mozarella"
+  },
+  {
+    "category": "SPOR Bilgi",
+    "text": "Hangi NFL takımının logosu sadece kaskının bir yanında bulunur?",
+    "options": ["Pittsburgh Steelers", "Kansas City Chiefs", "Philadelphia Eagles"],
+    "correct": "Pittsburgh Steelers"
+  },
+  {
+    "category": "SPOR Bilgi",
+    "text": "10.000 sayı barajına ulaşan en genç NBA oyuncusu kimdir?",
+    "options": ["LeBron James", "Kobe Bryant", "Kevin Durant"],
+    "correct": "LeBron James"
+  },
+  {
+    "category": "SPOR Bilgi",
+    "text": "En fazla Olimpiyat altın madalyasına sahip ülke hangisidir?",
+    "options": ["Sovyetler Birliği", "Amerika Birleşik Devletleri", "Birleşik Krallık"],
+    "correct": "Amerika Birleşik Devletleri"
+  },
+  {
+    "category": "SPOR Bilgi",
+    "text": "Hangi ülke FIFA Dünya Kupası'na her turnuvada katılmıştır?",
+    "options": ["Arjantin", "İtalya", "Brezilya"],
+    "correct": "Brezilya"
+  },
+  {
+    "category": "SPOR Bilgi",
+    "text": "Profesyonel kadın futbolunda en çok gol atan oyuncu kimdir?",
+    "options": ["Marta", "Abby Wambach", "Christine Sinclair"],
+    "correct": "Christine Sinclair"
+  }
+]
