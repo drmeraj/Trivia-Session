@@ -19,26 +19,36 @@
     <tbody id="board"></tbody>
   </table>
 
+  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
   <script>
-    // 1) Your Firebase config
-    const firebaseConfig = { /* …your keys… */ };
+    // 1) Your Firebase config (same as quiz.html)
+    const firebaseConfig = {
+      apiKey: "AIzaSyBbuf0Y8givV0xE4r2Wc2Dz4nBWLqAbHoE",
+      authDomain: "trivia-session.firebaseapp.com",
+      databaseURL: "https://trivia-session-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "trivia-session",
+      storageBucket: "trivia-session.appspot.com",
+      messagingSenderId: "340650193295",
+      appId: "1:340650193295:web:a13b278dd793ab101e9bfa",
+      measurementId: "G-5H6Y3D0BDCH"
+    };
+    // 2) Initialize
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // 2) Listen to /scores and rebuild table on any change
+    // 3) Live‐update the table whenever /scores changes
     db.ref('scores').on('value', snap => {
       const scores = snap.val() || {};
-      // Convert to [ [player,score], ... ] and sort descending
       const entries = Object.entries(scores)
         .sort((a,b) => b[1] - a[1]);
 
       const tbody = document.getElementById('board');
       tbody.innerHTML = '';
-      for (const [player, pts] of entries) {
+      for (const [name, pts] of entries) {
         const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${player}</td><td>${pts}</td>`;
+        tr.innerHTML = `<td>${name}</td><td>${pts}</td>`;
         tbody.appendChild(tr);
       }
     });
