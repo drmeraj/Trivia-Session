@@ -1,83 +1,122 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>Trivia Session</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
-    body { font-family: Arial, sans-serif; padding:20px; text-align:center; }
-    .option-btn {
-      display:block; width:80%; max-width:300px; margin:10px auto;
-      padding:10px; font-size:18px; background:#f0f0f0;
-      border:none; border-radius:5px; cursor:pointer;
+    body { font-family: sans-serif; padding:20px; text-align:center; }
+    .option { 
+      display:block; 
+      margin:10px auto; 
+      padding:12px; 
+      width:80%; max-width:300px; 
+      background:#eee; 
+      border-radius:5px; 
+      cursor:pointer;
+      user-select:none;
     }
-    .option-btn:hover { background:#d0eaff; }
-    #questionArea, #resultArea { display:none; }
+    .option:hover { background:#ddd; }
+    #timer { font-weight:bold; margin-top:10px; }
+    #result { margin-top:15px; font-size:1.1em; }
+    #finalScreen { display:none; }
   </style>
 </head>
 <body>
-  <h2>Trivia Session</h2>
-  <div id="nameEntry">
-    <input id="nameInput" placeholder="Enter your name" />
-    <button onclick="joinQuiz()">Join Quiz</button>
-  </div>
-  <div id="questionArea">
-    <h3 id="questionText"></h3>
-    <div id="options"></div>
-  </div>
-  <div id="resultArea">
-    <p id="resultText"></p>
-  </div>
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyDecxoqlRsg2jDC7E2jIRwios4St57NGy4",
-      authDomain: "dymerhealthquiz.firebaseapp.com",
-      databaseURL: "https://dymerhealthquiz-default-rtdb.europe-west1.firebasedatabase.app",
-      projectId: "dymerhealthquiz",
-      storageBucket: "dymerhealthquiz.appspot.com",
-      messagingSenderId: "610713056223",
-      appId: "1:610713056223:web:e6b41d007924917527ca6a"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-    let username = "", currentIndex = -1;
 
-    function joinQuiz() {
-      username = document.getElementById("nameInput").value.trim();
-      if (!username) return alert("Please enter your name.");
-      document.getElementById("nameEntry").style.display = "none";
-      document.getElementById("questionArea").style.display = "block";
-      db.ref("currentQuestion").on("value", snap => {
-        const q = snap.val();
-        if (!q || q.index === currentIndex) return;
-        currentIndex = q.index;
-        showQuestion(q);
-      });
+  <h1>Trivia Session</h1>
+
+  <!-- Name entry -->
+  <div id="nameScreen">
+    <input id="nameInput" placeholder="Enter your name" />
+    <button onclick="startQuiz()">Start Quiz</button>
+  </div>
+
+  <!-- Quiz screen -->
+  <div id="quizScreen" style="display:none;">
+    <h2 id="questionText"></h2>
+    <div id="options"></div>
+    <div id="timer">Time left: <span id="timeLeft">20</span>s</div>
+    <div id="result"></div>
+  </div>
+
+  <!-- Final results -->
+  <div id="finalScreen">
+    <h2>All done, <span id="playerName"></span>!</h2>
+    <p id="finalScore"></p>
+    <button onclick="location.reload()">Play Again</button>
+  </div>
+
+  <script>
+    let questions = [], player, current=0, score=0, timerId, timeLeft=20;
+
+    async function startQuiz() {
+      player = document.getElementById('nameInput').value.trim();
+      if (!player) return alert('Please enter your name');
+      document.getElementById('nameScreen').style.display = 'none';
+
+      // 1) fetch static questions
+      const res = await fetch('questions.json');
+      questions = await res.json();
+      questions = questions.slice(0,15);  // first 15
+
+      document.getElementById('quizScreen').style.display = '';
+      showQuestion();
     }
 
-    function showQuestion(q) {
-      document.getElementById("resultArea").style.display = "none";
-      document.getElementById("questionText").innerText = q.text;
-      const opts = document.getElementById("options");
-      opts.innerHTML = "";
+    function showQuestion() {
+      if (current >= questions.length) return finishQuiz();
+
+      timeLeft = 20;
+      document.getElementById('result').innerText = '';
+      const q = questions[current];
+
+      document.getElementById('questionText').innerText = q.text;
+      const opts = document.getElementById('options');
+      opts.innerHTML = '';
       q.options.forEach(opt => {
-        const btn = document.createElement("button");
-        btn.className = "option-btn";
+        const btn = document.createElement('div');
+        btn.className = 'option';
         btn.innerText = opt;
-        btn.onclick = () => submitAnswer(q.index, opt, q.correct);
+        btn.onclick = () => answer(opt, q.correct);
         opts.appendChild(btn);
       });
+
+      document.getElementById('timeLeft').innerText = timeLeft;
+      clearInterval(timerId);
+      timerId = setInterval(() => {
+        timeLeft--;
+        document.getElementById('timeLeft').innerText = timeLeft;
+        if (timeLeft <= 0) {
+          clearInterval(timerId);
+          answer(null, q.correct);
+        }
+      }, 1000);
     }
 
-    function submitAnswer(idx, sel, correct) {
-      db.ref(`responses/${idx}/${username}`).set(sel)
-       .then(() => {
-         document.getElementById("resultArea").style.display = "block";
-         document.getElementById("resultText").innerText =
-           sel === correct ? "✅ Correct!" : `❌ Incorrect. Correct: ${correct}`;
-       });
+    function answer(choice, correct) {
+      clearInterval(timerId);
+      const resEl = document.getElementById('result');
+      if (choice === correct) {
+        score++;
+        resEl.innerText = '✅ Correct!';
+      } else {
+        resEl.innerText = `❌ Wrong! Answer: ${correct}`;
+      }
+      setTimeout(() => {
+        current++;
+        showQuestion();
+      }, 2000);
+    }
+
+    function finishQuiz() {
+      document.getElementById('quizScreen').style.display = 'none';
+      document.getElementById('playerName').innerText = player;
+      document.getElementById('finalScore').innerText =
+        `Your score: ${score} / ${questions.length}`;
+      document.getElementById('finalScreen').style.display = '';
     }
   </script>
+
 </body>
 </html>
