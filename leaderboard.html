@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Leaderboard</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    body { font-family: Arial, sans-serif; padding:20px; text-align:center; }
+    h1 { margin-bottom:10px; }
+    table { margin: 0 auto; border-collapse: collapse; width: 80%; max-width:400px; }
+    th, td { padding:8px 12px; border:1px solid #ccc; }
+    th { background: #f7f7f7; }
+  </style>
+</head>
+<body>
+  <h1>🏆 Leaderboard</h1>
+  <table>
+    <thead><tr><th>Player</th><th>Score</th></tr></thead>
+    <tbody id="board"></tbody>
+  </table>
+
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <script>
+    // 1) Your Firebase config
+    const firebaseConfig = { /* …your keys… */ };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // 2) Listen to /scores and rebuild table on any change
+    db.ref('scores').on('value', snap => {
+      const scores = snap.val() || {};
+      // Convert to [ [player,score], ... ] and sort descending
+      const entries = Object.entries(scores)
+        .sort((a,b) => b[1] - a[1]);
+
+      const tbody = document.getElementById('board');
+      tbody.innerHTML = '';
+      for (const [player, pts] of entries) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${player}</td><td>${pts}</td>`;
+        tbody.appendChild(tr);
+      }
+    });
+  </script>
+</body>
+</html>
