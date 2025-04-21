@@ -1,53 +1,76 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Trivia Session – Admin Panel</title>
+  <title>Trivia Session – Admin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; padding:20px; text-align:center; }
+    button { padding:10px 20px; font-size:18px; margin:10px; cursor:pointer; }
+    #status { margin-top:20px; font-weight:bold; }
+  </style>
 </head>
 <body>
-  <h2>Admin – Trivia Session</h2>
-  <textarea id="question" placeholder="Question text" rows="2" cols="50"></textarea><br>
-  <input id="opt1" placeholder="Option 1" />
-  <input id="opt2" placeholder="Option 2" />
-  <input id="opt3" placeholder="Option 3" />
-  <input id="opt4" placeholder="Option 4" /><br>
-  <input id="correct" placeholder="Correct answer (exact text)" /><br><br>
-  <button onclick="sendQuestion()">🚀 Send to Participants</button>
-
-  
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
-<script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyDecxoqlRsg2jDC7E2jIRwios4St57NGy4",
-    authDomain: "dymerhealthquiz.firebaseapp.com",
-    databaseURL: "https://dymerhealthquiz-default-rtdb.europe-west1.firebasedatabase.app/",
-    projectId: "dymerhealthquiz",
-    storageBucket: "dymerhealthquiz.appspot.com",
-    messagingSenderId: "610713056223",
-    appId: "1:610713056223:web:e6b41d007924917527ca6a"
-  };
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.database();
-</script>
+  <h2>Admin Panel – Trivia Session</h2>
+  <button id="startBtn">🚀 Start Quiz (15 Questions)</button>
+  <div id="status"></div>
 
   <script>
-    let questionIndex = 0;
-    function sendQuestion() {
-      const q = document.getElementById("question").value;
-      const options = [document.getElementById("opt1").value, document.getElementById("opt2").value, document.getElementById("opt3").value, document.getElementById("opt4").value];
-      const correct = document.getElementById("correct").value;
-
-      const questionData = {
-        index: questionIndex++,
-        text: q,
-        options: options,
-        correct: correct,
-        timestamp: Date.now()
-      };
-      db.ref("currentQuestion").set(questionData);
-      db.ref("questions").push(questionData);
+    // 1) Your Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyDecxoqlRsg2jDC7E2jIRwios4St57NGy4",
+      authDomain: "dymerhealthquiz.firebaseapp.com",
+      databaseURL: "https://dymerhealthquiz-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "dymerhealthquiz",
+      storageBucket: "dymerhealthquiz.appspot.com",
+      messagingSenderId: "610713056223",
+      appId: "1:610713056223:web:e6b41d007924917527ca6a"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    
+    // 2) Fetch first 15 questions ordered by index
+    async function fetchQuestions() {
+      const snapshot = await db.ref('questions')
+        .orderByChild('index')
+        .limitToFirst(15)
+        .once('value');
+      const data = snapshot.val() || {};
+      // Convert from object of QIDs → array sorted by index
+      return Object.values(data).sort((a,b)=>a.index - b.index);
     }
+
+    // 3) Send one question to /currentQuestion
+    function pushQuestion(q) {
+      return db.ref('currentQuestion').set({
+        index: q.index,
+        text: q.text,
+        options: q.options,
+        correct: q.correct
+      });
+    }
+
+    // 4) When Start clicked: sequence through the 15, 20s apart
+    document.getElementById('startBtn').onclick = async () => {
+      const btn = document.getElementById('startBtn');
+      btn.disabled = true;
+      btn.innerText = '⏳ Quiz in progress…';
+      const status = document.getElementById('status');
+      
+      const questions = await fetchQuestions();
+      for (let i = 0; i < questions.length; i++) {
+        status.innerText = `Question ${i+1} of ${questions.length}`;
+        await pushQuestion(questions[i]);
+        // Wait 20 seconds
+        await new Promise(res => setTimeout(res, 20000));
+      }
+      
+      // Cleanup
+      status.innerText = '✅ Quiz complete!';
+      btn.innerText = '🚀 Restart Quiz';
+      btn.disabled = false;
+    };
   </script>
 </body>
 </html>
