@@ -46,7 +46,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
   <script>
-    // ── 1) Your Firebase config ─────────────────────────────
+    // 1) Paste your Firebase config here:
     const firebaseConfig = {
       apiKey: "AIzaSyBbuf0Y8givV0xE4r2Wc2Dz4nBWLqAbHoE",
       authDomain: "trivia-session.firebaseapp.com",
@@ -57,11 +57,11 @@
       appId: "1:340650193295:web:a13b278dd793ab101e9bfa",
       measurementId: "G-5H6Y3D0BDCH"
     };
-    // ── 2) Initialize Firebase ───────────────────────────────
+    // 2) Initialize Firebase & DB handle
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // ── 3) Quiz logic ───────────────────────────────────────
+    // 3) Quiz logic
     let questions = [], player, current=0, score=0, timerId, timeLeft=20;
 
     async function startQuiz() {
@@ -69,7 +69,7 @@
       if (!player) return alert('Please enter your name');
       document.getElementById('nameScreen').style.display = 'none';
 
-      // Fetch your static questions.json
+      // Fetch your questions.json
       const res = await fetch('questions.json');
       questions = await res.json();
       questions = questions.slice(0,15);
@@ -114,9 +114,8 @@
       if (choice === correct) {
         score++;
         resEl.innerText = '✅ Correct!';
-        // Write a running score for everyone
-        db.ref(`scores/${player}`)
-          .transaction(n => (n||0) + 1);
+        // Increment player’s score in Firebase
+        db.ref(`scores/${player}`).transaction(n => (n||0) + 1);
       } else {
         resEl.innerText = `❌ Wrong! Answer: ${correct}`;
       }
