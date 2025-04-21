@@ -23,7 +23,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
   <script>
-    // 1) Your Firebase config (same as quiz.html)
+    // Paste the same Firebase config here
     const firebaseConfig = {
       apiKey: "AIzaSyBbuf0Y8givV0xE4r2Wc2Dz4nBWLqAbHoE",
       authDomain: "trivia-session.firebaseapp.com",
@@ -34,11 +34,10 @@
       appId: "1:340650193295:web:a13b278dd793ab101e9bfa",
       measurementId: "G-5H6Y3D0BDCH"
     };
-    // 2) Initialize
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // 3) Live‐update the table whenever /scores changes
+    // Listen and render live scoreboard
     db.ref('scores').on('value', snap => {
       const scores = snap.val() || {};
       const entries = Object.entries(scores)
