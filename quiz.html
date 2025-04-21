@@ -6,15 +6,10 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
     body { font-family: sans-serif; padding:20px; text-align:center; }
-    .option { 
-      display:block; 
-      margin:10px auto; 
-      padding:12px; 
-      width:80%; max-width:300px; 
-      background:#eee; 
-      border-radius:5px; 
-      cursor:pointer;
-      user-select:none;
+    .option {
+      display:block; margin:10px auto; padding:12px;
+      width:80%; max-width:300px; background:#eee;
+      border-radius:5px; cursor:pointer; user-select:none;
     }
     .option:hover { background:#ddd; }
     #timer { font-weight:bold; margin-top:10px; }
@@ -47,7 +42,26 @@
     <button onclick="location.reload()">Play Again</button>
   </div>
 
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
   <script>
+    // ── 1) Your Firebase config ─────────────────────────────
+    const firebaseConfig = {
+      apiKey: "AIzaSyBbuf0Y8givV0xE4r2Wc2Dz4nBWLqAbHoE",
+      authDomain: "trivia-session.firebaseapp.com",
+      databaseURL: "https://trivia-session-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "trivia-session",
+      storageBucket: "trivia-session.appspot.com",
+      messagingSenderId: "340650193295",
+      appId: "1:340650193295:web:a13b278dd793ab101e9bfa",
+      measurementId: "G-5H6Y3D0BDCH"
+    };
+    // ── 2) Initialize Firebase ───────────────────────────────
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // ── 3) Quiz logic ───────────────────────────────────────
     let questions = [], player, current=0, score=0, timerId, timeLeft=20;
 
     async function startQuiz() {
@@ -55,10 +69,10 @@
       if (!player) return alert('Please enter your name');
       document.getElementById('nameScreen').style.display = 'none';
 
-      // 1) fetch static questions
+      // Fetch your static questions.json
       const res = await fetch('questions.json');
       questions = await res.json();
-      questions = questions.slice(0,15);  // first 15
+      questions = questions.slice(0,15);
 
       document.getElementById('quizScreen').style.display = '';
       showQuestion();
@@ -100,6 +114,9 @@
       if (choice === correct) {
         score++;
         resEl.innerText = '✅ Correct!';
+        // Write a running score for everyone
+        db.ref(`scores/${player}`)
+          .transaction(n => (n||0) + 1);
       } else {
         resEl.innerText = `❌ Wrong! Answer: ${correct}`;
       }
@@ -117,6 +134,5 @@
       document.getElementById('finalScreen').style.display = '';
     }
   </script>
-
 </body>
 </html>
